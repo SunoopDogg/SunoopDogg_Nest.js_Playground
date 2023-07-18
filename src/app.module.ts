@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AppService } from './app.service';
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE') || true,
       }),
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
