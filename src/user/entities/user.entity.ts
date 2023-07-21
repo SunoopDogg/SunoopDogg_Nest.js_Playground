@@ -5,19 +5,19 @@ export class User {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ type: 'varchar', length: 50 })
-  name: string;
-
-  @Column({ type: 'varchar', length: 60 })
+  @Column({ type: 'varchar', length: 100, unique: true })
   email: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar', length: 100 })
   password: string;
+
+  @Column({ type: 'varchar', length: 100 })
+  name: string;
 
   @Column({ type: 'varchar', length: 20 })
   phone: string;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: false })
   agree: boolean;
 
   @Column({ type: 'varchar', length: 200, nullable: true, default: null })
