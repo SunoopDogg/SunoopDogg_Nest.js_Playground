@@ -14,19 +14,23 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signIn(singInDto: SignInDto) {
-    const user = await this.userService.findOne({
-      where: { email: singInDto.email },
-    });
-
-    if (user && (await bcrypt.compare(singInDto.password, user.password))) {
-      const payload = { email: user.email, sub: user.id };
-
-      return {
-        access_token: this.jwtService.sign(payload),
-      };
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.userService.findOne({ where: { email } });
+    if (user && bcrypt.compareSync(password, user.password)) {
+      const { password, ...result } = user;
+      password;
+      return result;
     }
-
     return null;
+  }
+
+  async signIn(signInDto: SignInDto) {
+    const user = await this.validateUser(signInDto.email, signInDto.password);
+    if (!user) return null;
+
+    const payload = { email: user.email, sub: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }
