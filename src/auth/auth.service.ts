@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 
 import { UserService } from 'src/user/user.service';
 
-import { SignInDto } from './dto/sign-in.dto';
+import { JwtPayloadDto } from './dto/jwt-payload.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,13 +24,14 @@ export class AuthService {
     return null;
   }
 
-  async signIn(signInDto: SignInDto) {
-    const user = await this.validateUser(signInDto.email, signInDto.password);
-    if (!user) return null;
-
-    const payload = { email: user.email, sub: user.id };
+  async signIn(user: any) {
+    const payload: JwtPayloadDto = {
+      email: user.email,
+      sub: user.id,
+      username: user.name,
+    };
     return {
-      access_token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload),
     };
   }
 }
