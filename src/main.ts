@@ -1,13 +1,21 @@
-import { NestFactory } from '@nestjs/core';
+import { Logger as NestLogger } from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { NestFactory } from '@nestjs/core';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 
 import { AppModule } from './app.module';
-import { LoggingInterceptor } from './util/logging.interceptor';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  app.useGlobalInterceptors(new LoggingInterceptor());
+async function bootstrap(): Promise<string> {
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+    {
+      bufferLogs: true,
+    },
+  );
 
   const corsOptions: CorsOptions = {
     origin: ['http://localhost:3000', 'http://localhost:4000'],
@@ -19,6 +27,16 @@ async function bootstrap() {
   };
   app.enableCors(corsOptions);
 
-  await app.listen(process.env.API_PORT || 4000);
+  await app.listen(process.env.PORT || 3000);
+
+  return app.getUrl();
 }
-bootstrap();
+
+void (async (): Promise<void> => {
+  try {
+    const url = await bootstrap();
+    NestLogger.log(url, 'Bootstrap');
+  } catch (error) {
+    NestLogger.error(error, 'Bootstrap');
+  }
+})();
