@@ -2,6 +2,20 @@
 /dist
 /node_modules
 
+# dependencies
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+.pnp.*
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+yarn.lock
+
 # Logs
 logs
 *.log
